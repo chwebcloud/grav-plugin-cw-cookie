@@ -1,0 +1,503 @@
+name: 'CHWEB-Cookie'
+slug: cw-cookie
+type: plugin
+version: 1.1.1
+description: 'Cookie banner with settings dialog for GDPR and the Swiss revDSG: Google Consent Mode v2, Tag Manager, Analytics 4 and any further service load only after consent. Embedded content stays blocked until its category is allowed. No CDN, nothing stored on the server.'
+icon: cookie-bite
+author:
+  name: CHWEB GmbH
+  email: info@chweb.ch
+  url: 'https://chweb.ch'
+homepage: 'https://chweb.ch'
+bugs: 'https://github.com/chwebcloud/grav-plugin-cw-cookie/issues'
+docs: 'https://github.com/chwebcloud/grav-plugin-cw-cookie/blob/main/README.md'
+keywords: cookie, consent, gdpr, revdsg, privacy, google tag manager, google analytics, consent mode, chweb
+license: MIT
+
+# Grav-Major-Versionen, gegen die geprueft wurde.
+compatibility:
+  grav:
+    - '2.0'
+
+dependencies:
+  - { name: grav, version: '>=1.7.0' }
+
+form:
+  validation: loose
+  fields:
+    tabs:
+      type: tabs
+      active: 1
+      fields:
+
+        # ------------------------------------------------------ Allgemein --
+        tab_allgemein:
+          type: tab
+          title: PLUGIN_CW_COOKIE.TAB_ALLGEMEIN_TITLE
+          fields:
+            enabled:
+              type: toggle
+              label: PLUGIN_CW_COOKIE.ENABLED_LABEL
+              highlight: 1
+              default: 1
+              options:
+                1: PLUGIN_ADMIN.ENABLED
+                0: PLUGIN_ADMIN.DISABLED
+              validate:
+                type: bool
+
+            allgemein_hinweis:
+              type: display
+              markdown: true
+              content: 'Der Banner erscheint beim ersten Besuch und so lange, bis eine Wahl getroffen ist. Die Zustimmung wird **nur im Browser** gespeichert (Cookie `cw_consent`), nie auf dem Server. Einen Link zum erneuten Öffnen setzt man im Theme mit der Twig-Funktion `cw_cookie_link()` oder mit einem beliebigen Element mit dem Attribut `data-cw-cookie-oeffnen`.'
+
+            version:
+              type: number
+              label: PLUGIN_CW_COOKIE.VERSION_LABEL
+              default: 1
+              size: x-small
+              validate:
+                type: int
+                min: 1
+              help: PLUGIN_CW_COOKIE.VERSION_HELP
+
+            laufzeit_tage:
+              type: number
+              label: PLUGIN_CW_COOKIE.LAUFZEIT_TAGE_LABEL
+              default: 180
+              size: x-small
+              validate:
+                type: int
+                min: 1
+                max: 730
+              help: PLUGIN_CW_COOKIE.LAUFZEIT_TAGE_HELP
+
+            datenschutz_url:
+              type: text
+              label: PLUGIN_CW_COOKIE.DATENSCHUTZ_URL_LABEL
+              default: /datenschutz
+              placeholder: PLUGIN_CW_COOKIE.DATENSCHUTZ_URL_PLACEHOLDER
+              help: PLUGIN_CW_COOKIE.DATENSCHUTZ_URL_HELP
+
+            impressum_url:
+              type: text
+              label: PLUGIN_CW_COOKIE.IMPRESSUM_URL_LABEL
+              default: /impressum
+              placeholder: PLUGIN_CW_COOKIE.IMPRESSUM_URL_PLACEHOLDER
+
+            ausnahmen:
+              type: array
+              label: PLUGIN_CW_COOKIE.AUSNAHMEN_LABEL
+              value_only: true
+              default:
+                - /admin
+                - /api
+              help: PLUGIN_CW_COOKIE.DEFAULT_HELP
+
+        # ---------------------------------------------------------- Texte --
+        tab_texte:
+          type: tab
+          title: PLUGIN_CW_COOKIE.TAB_TEXTE_TITLE
+          fields:
+            texte_hinweis:
+              type: display
+              markdown: true
+              content: 'Leere Felder zeigen den Standardtext in der Sprache der Seite (Deutsch, Französisch, Italienisch, Englisch). Nur ausfüllen, wenn Sie einen eigenen Wortlaut wünschen.'
+
+            texte.titel:
+              type: text
+              label: PLUGIN_CW_COOKIE.TEXTE_TITEL_LABEL
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_TITEL_PLACEHOLDER
+
+            texte.text:
+              type: textarea
+              label: PLUGIN_CW_COOKIE.TEXTE_TEXT_LABEL
+              rows: 4
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_TEXT_PLACEHOLDER
+              help: PLUGIN_CW_COOKIE.TEXTE_TEXT_HELP
+
+            texte.alle:
+              type: text
+              label: PLUGIN_CW_COOKIE.TEXTE_ALLE_LABEL
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_ALLE_PLACEHOLDER
+
+            texte.notwendige:
+              type: text
+              label: PLUGIN_CW_COOKIE.TEXTE_NOTWENDIGE_LABEL
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_NOTWENDIGE_PLACEHOLDER
+
+            texte.einstellungen:
+              type: text
+              label: PLUGIN_CW_COOKIE.TEXTE_EINSTELLUNGEN_LABEL
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_EINSTELLUNGEN_PLACEHOLDER
+
+            texte.dialog_titel:
+              type: text
+              label: PLUGIN_CW_COOKIE.TEXTE_DIALOG_TITEL_LABEL
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_DIALOG_TITEL_PLACEHOLDER
+
+            texte.dialog_text:
+              type: textarea
+              label: PLUGIN_CW_COOKIE.TEXTE_DIALOG_TEXT_LABEL
+              rows: 3
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_DIALOG_TEXT_PLACEHOLDER
+
+            texte.speichern:
+              type: text
+              label: PLUGIN_CW_COOKIE.TEXTE_SPEICHERN_LABEL
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_SPEICHERN_PLACEHOLDER
+
+            texte.link:
+              type: text
+              label: PLUGIN_CW_COOKIE.TEXTE_LINK_LABEL
+              placeholder: PLUGIN_CW_COOKIE.TEXTE_LINK_PLACEHOLDER
+              help: PLUGIN_CW_COOKIE.TEXTE_LINK_HELP
+
+        # ----------------------------------------------------- Kategorien --
+        tab_kategorien:
+          type: tab
+          title: PLUGIN_CW_COOKIE.TAB_KATEGORIEN_TITLE
+          fields:
+            kategorien_hinweis:
+              type: display
+              markdown: true
+              content: 'Jede Kategorie erscheint im Einstellungsdialog mit einem eigenen Schalter. **Notwendig** ist immer an und nicht abwählbar. Den **Schlüssel** braucht man, um Dienste und Einbettungen einer Kategorie zuzuordnen (`data-cw-cookie-kategorie="statistik"`). Leerer Titel oder leere Beschreibung = Standardtext.'
+
+            kategorien:
+              type: list
+              label: PLUGIN_CW_COOKIE.KATEGORIEN_LABEL
+              style: vertical
+              collapsible: true
+              collapsed: true
+              btnLabel: Kategorie hinzufügen
+              fields:
+                .key:
+                  type: text
+                  label: PLUGIN_CW_COOKIE.KEY_LABEL
+                  placeholder: PLUGIN_CW_COOKIE.KEY_PLACEHOLDER
+                  help: PLUGIN_CW_COOKIE.KEY_HELP
+                  validate:
+                    required: true
+                    pattern: '[a-z0-9_-]+'
+                .titel:
+                  type: text
+                  label: PLUGIN_CW_COOKIE.TITEL_LABEL
+                .beschreibung:
+                  type: textarea
+                  label: PLUGIN_CW_COOKIE.BESCHREIBUNG_LABEL
+                  rows: 2
+                .notwendig:
+                  type: toggle
+                  label: PLUGIN_CW_COOKIE.NOTWENDIG_LABEL
+                  default: 0
+                  highlight: 1
+                  options:
+                    1: PLUGIN_ADMIN.YES
+                    0: PLUGIN_ADMIN.NO
+                  validate:
+                    type: bool
+                .aktiv:
+                  type: toggle
+                  label: PLUGIN_CW_COOKIE.AKTIV_LABEL
+                  default: 1
+                  highlight: 1
+                  options:
+                    1: PLUGIN_ADMIN.YES
+                    0: PLUGIN_ADMIN.NO
+                  validate:
+                    type: bool
+                .google:
+                  type: checkboxes
+                  label: PLUGIN_CW_COOKIE.GOOGLE_LABEL
+                  use: keys
+                  options:
+                    analytics_storage: PLUGIN_CW_COOKIE.GOOGLE_ANALYTICS_STORAGE_OPTION
+                    ad_storage: PLUGIN_CW_COOKIE.GOOGLE_AD_STORAGE_OPTION
+                    ad_user_data: PLUGIN_CW_COOKIE.GOOGLE_AD_USER_DATA_OPTION
+                    ad_personalization: PLUGIN_CW_COOKIE.GOOGLE_AD_PERSONALIZATION_OPTION
+                    personalization_storage: PLUGIN_CW_COOKIE.GOOGLE_PERSONALIZATION_STORAGE_OPTION
+                    functionality_storage: PLUGIN_CW_COOKIE.GOOGLE_FUNCTIONALITY_STORAGE_OPTION
+                    security_storage: PLUGIN_CW_COOKIE.GOOGLE_SECURITY_STORAGE_OPTION
+                  help: PLUGIN_CW_COOKIE.GOOGLE_HELP
+
+        # --------------------------------------------------------- Google --
+        tab_google:
+          type: tab
+          title: PLUGIN_CW_COOKIE.TAB_GOOGLE_TITLE
+          fields:
+            google_hinweis:
+              type: display
+              markdown: true
+              content: 'Tragen Sie **entweder** den Google Tag Manager **oder** Google Analytics 4 ein. Ist beides gesetzt, wird GA4 nicht direkt eingebunden (sonst würde jeder Besuch doppelt gezählt) – GA4 richtet man dann im Tag Manager ein. Der Tag Manager erhält bei jeder Wahl das Ereignis `cw_consent_update` mit der Variable `cw_consent` (z. B. `cw_consent.statistik`).'
+
+            google.consent_mode:
+              type: toggle
+              label: PLUGIN_CW_COOKIE.GOOGLE_CONSENT_MODE_LABEL
+              highlight: 1
+              default: 1
+              options:
+                1: PLUGIN_ADMIN.ENABLED
+                0: PLUGIN_ADMIN.DISABLED
+              validate:
+                type: bool
+              help: PLUGIN_CW_COOKIE.GOOGLE_CONSENT_MODE_HELP
+
+            google.wait_for_update:
+              type: number
+              label: PLUGIN_CW_COOKIE.GOOGLE_WAIT_FOR_UPDATE_LABEL
+              default: 500
+              size: x-small
+              validate:
+                type: int
+                min: 0
+                max: 10000
+              help: PLUGIN_CW_COOKIE.GOOGLE_WAIT_FOR_UPDATE_HELP
+
+            google.ads_data_redaction:
+              type: toggle
+              label: PLUGIN_CW_COOKIE.GOOGLE_ADS_DATA_REDACTION_LABEL
+              highlight: 1
+              default: 1
+              options:
+                1: PLUGIN_ADMIN.YES
+                0: PLUGIN_ADMIN.NO
+              validate:
+                type: bool
+              help: PLUGIN_CW_COOKIE.GOOGLE_ADS_DATA_REDACTION_HELP
+
+            google.url_passthrough:
+              type: toggle
+              label: PLUGIN_CW_COOKIE.GOOGLE_URL_PASSTHROUGH_LABEL
+              highlight: 0
+              default: 0
+              options:
+                1: PLUGIN_ADMIN.YES
+                0: PLUGIN_ADMIN.NO
+              validate:
+                type: bool
+              help: PLUGIN_CW_COOKIE.GOOGLE_URL_PASSTHROUGH_HELP
+
+            gtm_bereich:
+              type: section
+              title: PLUGIN_CW_COOKIE.GTM_BEREICH_TITLE
+              underline: true
+
+            google.gtm_id:
+              type: text
+              label: PLUGIN_CW_COOKIE.GOOGLE_GTM_ID_LABEL
+              placeholder: PLUGIN_CW_COOKIE.GOOGLE_GTM_ID_PLACEHOLDER
+              help: PLUGIN_CW_COOKIE.GOOGLE_GTM_ID_HELP
+              validate:
+                pattern: '(GTM-[A-Za-z0-9]{4,12})?'
+
+            google.gtm_laden:
+              type: select
+              label: PLUGIN_CW_COOKIE.GOOGLE_GTM_LADEN_LABEL
+              default: immer
+              options:
+                immer: PLUGIN_CW_COOKIE.GOOGLE_GTM_LADEN_IMMER_OPTION
+                zustimmung: PLUGIN_CW_COOKIE.GOOGLE_GTM_LADEN_ZUSTIMMUNG_OPTION
+              help: PLUGIN_CW_COOKIE.GOOGLE_GTM_LADEN_HELP
+
+            google.gtm_kategorie:
+              type: select
+              label: PLUGIN_CW_COOKIE.GOOGLE_GTM_KATEGORIE_LABEL
+              default: statistik
+              options:
+                statistik: PLUGIN_CW_COOKIE.GOOGLE_GTM_KATEGORIE_STATISTIK_OPTION
+                marketing: PLUGIN_CW_COOKIE.GOOGLE_GTM_KATEGORIE_MARKETING_OPTION
+                medien: PLUGIN_CW_COOKIE.GOOGLE_GTM_KATEGORIE_MEDIEN_OPTION
+              data-options@: '\Grav\Plugin\CwCookiePlugin::kategorieOptionen'
+              help: PLUGIN_CW_COOKIE.GOOGLE_GTM_KATEGORIE_HELP
+
+            google.gtm_noscript:
+              type: toggle
+              label: PLUGIN_CW_COOKIE.GOOGLE_GTM_NOSCRIPT_LABEL
+              highlight: 1
+              default: 1
+              options:
+                1: PLUGIN_ADMIN.YES
+                0: PLUGIN_ADMIN.NO
+              validate:
+                type: bool
+              help: PLUGIN_CW_COOKIE.GOOGLE_GTM_NOSCRIPT_HELP
+
+            ga4_bereich:
+              type: section
+              title: PLUGIN_CW_COOKIE.GA4_BEREICH_TITLE
+              underline: true
+
+            google.ga4_id:
+              type: text
+              label: PLUGIN_CW_COOKIE.GOOGLE_GA4_ID_LABEL
+              placeholder: PLUGIN_CW_COOKIE.GOOGLE_GA4_ID_PLACEHOLDER
+              help: PLUGIN_CW_COOKIE.GOOGLE_GA4_ID_HELP
+              validate:
+                pattern: '(G-[A-Za-z0-9]{4,16})?'
+
+            google.ga4_laden:
+              type: select
+              label: PLUGIN_CW_COOKIE.GOOGLE_GA4_LADEN_LABEL
+              default: zustimmung
+              options:
+                zustimmung: PLUGIN_CW_COOKIE.GOOGLE_GA4_LADEN_ZUSTIMMUNG_OPTION
+                immer: PLUGIN_CW_COOKIE.GOOGLE_GA4_LADEN_IMMER_OPTION
+              help: PLUGIN_CW_COOKIE.GOOGLE_GA4_LADEN_HELP
+
+            google.ga4_kategorie:
+              type: select
+              label: PLUGIN_CW_COOKIE.GOOGLE_GA4_KATEGORIE_LABEL
+              default: statistik
+              options:
+                statistik: PLUGIN_CW_COOKIE.GOOGLE_GA4_KATEGORIE_STATISTIK_OPTION
+                marketing: PLUGIN_CW_COOKIE.GOOGLE_GA4_KATEGORIE_MARKETING_OPTION
+                medien: PLUGIN_CW_COOKIE.GOOGLE_GA4_KATEGORIE_MEDIEN_OPTION
+              data-options@: '\Grav\Plugin\CwCookiePlugin::kategorieOptionen'
+
+        # -------------------------------------------------- Weitere Dienste --
+        tab_dienste:
+          type: tab
+          title: PLUGIN_CW_COOKIE.TAB_DIENSTE_TITLE
+          fields:
+            dienste_hinweis:
+              type: display
+              markdown: true
+              content: 'Hier tragen Sie Dienste ein, die erst nach der Zustimmung laden dürfen: Matomo, Meta-Pixel, LinkedIn, Hotjar, ein Chat-Fenster … Das Script wird als gesperrtes `<script type="text/plain">` ausgegeben und erst geladen, wenn die gewählte Kategorie erlaubt ist. Jeder Dienst erscheint im Einstellungsdialog bei seiner Kategorie.'
+
+            dienste:
+              type: list
+              label: PLUGIN_CW_COOKIE.DIENSTE_LABEL
+              style: vertical
+              collapsible: true
+              collapsed: true
+              btnLabel: Dienst hinzufügen
+              fields:
+                .name:
+                  type: text
+                  label: PLUGIN_CW_COOKIE.NAME_LABEL
+                  placeholder: PLUGIN_CW_COOKIE.NAME_PLACEHOLDER
+                  validate:
+                    required: true
+                .kategorie:
+                  type: select
+                  label: PLUGIN_CW_COOKIE.KATEGORIE_LABEL
+                  default: statistik
+                  options:
+                    statistik: PLUGIN_CW_COOKIE.KATEGORIE_STATISTIK_OPTION
+                    marketing: PLUGIN_CW_COOKIE.KATEGORIE_MARKETING_OPTION
+                    medien: PLUGIN_CW_COOKIE.KATEGORIE_MEDIEN_OPTION
+                    notwendig: PLUGIN_CW_COOKIE.KATEGORIE_NOTWENDIG_OPTION
+                  data-options@: '\Grav\Plugin\CwCookiePlugin::kategorieOptionen'
+                .aktiv:
+                  type: toggle
+                  label: PLUGIN_CW_COOKIE.AKTIV_LABEL_2
+                  default: 1
+                  highlight: 1
+                  options:
+                    1: PLUGIN_ADMIN.YES
+                    0: PLUGIN_ADMIN.NO
+                  validate:
+                    type: bool
+                .anbieter:
+                  type: text
+                  label: PLUGIN_CW_COOKIE.ANBIETER_LABEL
+                  placeholder: PLUGIN_CW_COOKIE.ANBIETER_PLACEHOLDER
+                .beschreibung:
+                  type: textarea
+                  label: PLUGIN_CW_COOKIE.BESCHREIBUNG_LABEL_2
+                  rows: 2
+                .datenschutz_url:
+                  type: text
+                  label: PLUGIN_CW_COOKIE.DATENSCHUTZ_URL_LABEL_2
+                  placeholder: PLUGIN_CW_COOKIE.DATENSCHUTZ_URL_PLACEHOLDER_2
+                .cookies:
+                  type: text
+                  label: PLUGIN_CW_COOKIE.COOKIES_LABEL
+                  placeholder: PLUGIN_CW_COOKIE.COOKIES_PLACEHOLDER
+                  help: PLUGIN_CW_COOKIE.COOKIES_HELP
+                .script_url:
+                  type: text
+                  label: PLUGIN_CW_COOKIE.SCRIPT_URL_LABEL
+                  placeholder: PLUGIN_CW_COOKIE.SCRIPT_URL_PLACEHOLDER
+                .inline_code:
+                  type: textarea
+                  label: PLUGIN_CW_COOKIE.INLINE_CODE_LABEL
+                  rows: 6
+                  help: PLUGIN_CW_COOKIE.INLINE_CODE_HELP
+                .position:
+                  type: select
+                  label: PLUGIN_CW_COOKIE.POSITION_LABEL
+                  default: head
+                  options:
+                    head: PLUGIN_CW_COOKIE.POSITION_HEAD_OPTION
+                    body: PLUGIN_CW_COOKIE.POSITION_BODY_OPTION
+
+        # ---------------------------------------------------- Darstellung --
+        tab_darstellung:
+          type: tab
+          title: PLUGIN_CW_COOKIE.TAB_DARSTELLUNG_TITLE
+          fields:
+            darstellung.leitfarbe:
+              type: colorpicker
+              label: PLUGIN_CW_COOKIE.DARSTELLUNG_LEITFARBE_LABEL
+              default: '#434fbf'
+              help: PLUGIN_CW_COOKIE.DARSTELLUNG_LEITFARBE_HELP
+
+            darstellung.position:
+              type: select
+              label: PLUGIN_CW_COOKIE.DARSTELLUNG_POSITION_LABEL
+              default: leiste
+              options:
+                leiste: PLUGIN_CW_COOKIE.DARSTELLUNG_POSITION_LEISTE_OPTION
+                box-links: PLUGIN_CW_COOKIE.DARSTELLUNG_POSITION_BOX_LINKS_OPTION
+                box-rechts: PLUGIN_CW_COOKIE.DARSTELLUNG_POSITION_BOX_RECHTS_OPTION
+
+            darstellung.farbschema:
+              type: select
+              label: PLUGIN_CW_COOKIE.DARSTELLUNG_FARBSCHEMA_LABEL
+              default: hell
+              options:
+                hell: PLUGIN_CW_COOKIE.DARSTELLUNG_FARBSCHEMA_HELL_OPTION
+                auto: PLUGIN_CW_COOKIE.DARSTELLUNG_FARBSCHEMA_AUTO_OPTION
+
+            darstellung.radius:
+              type: number
+              label: PLUGIN_CW_COOKIE.DARSTELLUNG_RADIUS_LABEL
+              default: 10
+              size: x-small
+              validate:
+                type: int
+                min: 0
+                max: 32
+
+            darstellung.schwebender_knopf:
+              type: toggle
+              label: PLUGIN_CW_COOKIE.DARSTELLUNG_SCHWEBENDER_KNOPF_LABEL
+              highlight: 0
+              default: 0
+              options:
+                1: PLUGIN_ADMIN.YES
+                0: PLUGIN_ADMIN.NO
+              validate:
+                type: bool
+              help: PLUGIN_CW_COOKIE.DARSTELLUNG_SCHWEBENDER_KNOPF_HELP
+
+            darstellung.schwebender_knopf_seite:
+              type: select
+              label: PLUGIN_CW_COOKIE.DARSTELLUNG_SCHWEBENDER_KNOPF_SEITE_LABEL
+              default: links
+              options:
+                links: PLUGIN_CW_COOKIE.DARSTELLUNG_SCHWEBENDER_KNOPF_SEITE_LINKS_OPTION
+                rechts: PLUGIN_CW_COOKIE.DARSTELLUNG_SCHWEBENDER_KNOPF_SEITE_RECHTS_OPTION
+
+            darstellung.css_laden:
+              type: toggle
+              label: PLUGIN_CW_COOKIE.DARSTELLUNG_CSS_LADEN_LABEL
+              highlight: 1
+              default: 1
+              options:
+                1: PLUGIN_ADMIN.YES
+                0: PLUGIN_ADMIN.NO
+              validate:
+                type: bool
+              help: PLUGIN_CW_COOKIE.DARSTELLUNG_CSS_LADEN_HELP

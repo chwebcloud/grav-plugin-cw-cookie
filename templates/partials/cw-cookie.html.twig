@@ -1,0 +1,96 @@
+{#
+  CHWEB-Cookie: Banner, Einstellungsdialog, schwebender Knopf.
+
+  Ein Theme kann diese Datei unter templates/partials/cw-cookie.html.twig
+  ueberschreiben. Pflicht fuer das JavaScript sind nur die data-cw-cookie-*
+  Attribute und die IDs cw-cookie / cw-cookie-dialog.
+
+  Alles startet mit hidden: ohne JavaScript bleibt die Seite unberuehrt (und
+  es laedt auch nichts, was eine Zustimmung braucht).
+#}
+{% set t = cw_cookie.texte %}
+{% set d = cw_cookie.darstellung %}
+{% set schema = d.farbschema == 'auto' ? ' cw-cookie-schema-auto' : '' %}
+<div id="cw-cookie" class="cw-cookie cw-cookie--{{ d.position }}{{ schema }}" role="dialog" aria-modal="false" aria-labelledby="cw-cookie-titel" aria-describedby="cw-cookie-text" data-cw-cookie-banner hidden>
+  <div class="cw-cookie__rahmen">
+    <div class="cw-cookie__inhalt">
+      <h2 id="cw-cookie-titel" class="cw-cookie__titel">{{ t.titel }}</h2>
+      <div id="cw-cookie-text" class="cw-cookie__text">{{ t.text_html|raw }}</div>
+      {% if cw_cookie.datenschutz or cw_cookie.impressum %}
+      <p class="cw-cookie__rechtliches">
+        {% if cw_cookie.datenschutz %}<a href="{{ cw_cookie.datenschutz }}">{{ t.datenschutz }}</a>{% endif %}
+        {% if cw_cookie.datenschutz and cw_cookie.impressum %}<span aria-hidden="true"> · </span>{% endif %}
+        {% if cw_cookie.impressum %}<a href="{{ cw_cookie.impressum }}">{{ t.impressum }}</a>{% endif %}
+      </p>
+      {% endif %}
+    </div>
+    <div class="cw-cookie__knoepfe">
+      <button type="button" class="cw-cookie__knopf" data-cw-cookie-aktion="alle">{{ t.alle }}</button>
+      <button type="button" class="cw-cookie__knopf" data-cw-cookie-aktion="notwendige">{{ t.notwendige }}</button>
+      <button type="button" class="cw-cookie__knopf" data-cw-cookie-aktion="einstellungen" aria-haspopup="dialog" aria-controls="cw-cookie-dialog">{{ t.einstellungen }}</button>
+    </div>
+  </div>
+</div>
+
+<div id="cw-cookie-dialog" class="cw-cookie-dialog{{ schema }}" data-cw-cookie-dialog hidden>
+  <div class="cw-cookie-dialog__fenster" role="dialog" aria-modal="true" aria-labelledby="cw-cookie-dialog-titel" aria-describedby="cw-cookie-dialog-text" tabindex="-1">
+    <div class="cw-cookie-dialog__kopf">
+      <h2 id="cw-cookie-dialog-titel" class="cw-cookie__titel">{{ t.dialog_titel }}</h2>
+      <button type="button" class="cw-cookie-dialog__zu" data-cw-cookie-aktion="schliessen" aria-label="{{ t.schliessen }}">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+    </div>
+    <div class="cw-cookie-dialog__rumpf">
+      <div id="cw-cookie-dialog-text" class="cw-cookie__text">{{ t.dialog_text_html|raw }}</div>
+      <ul class="cw-cookie-kategorien">
+        {% for kat in cw_cookie.kategorien %}
+        {% set id = 'cw-cookie-kat-' ~ kat.key %}
+        <li class="cw-cookie-kat">
+          <div class="cw-cookie-kat__kopf">
+            <h3 id="{{ id }}-titel" class="cw-cookie-kat__titel">{{ kat.titel }}</h3>
+            {% if kat.notwendig %}
+              <span class="cw-cookie-kat__immer">{{ t.immer_aktiv }}</span>
+            {% endif %}
+            <span class="cw-cookie-schalter">
+              <input type="checkbox" role="switch" id="{{ id }}" data-cw-cookie-schalter="{{ kat.key }}" aria-labelledby="{{ id }}-titel" aria-describedby="{{ id }}-text"{% if kat.notwendig %} checked disabled{% endif %}>
+              <span class="cw-cookie-schalter__spur" aria-hidden="true"></span>
+            </span>
+          </div>
+          {% if kat.beschreibung %}<p id="{{ id }}-text" class="cw-cookie-kat__text">{{ kat.beschreibung }}</p>{% endif %}
+          {% if kat.dienste|length %}
+          <details class="cw-cookie-kat__dienste">
+            <summary>{{ t.dienste_zeigen|replace({'{anzahl}': kat.dienste|length}) }}</summary>
+            <ul>
+              {% for dienst in kat.dienste %}
+              <li class="cw-cookie-dienst">
+                <strong class="cw-cookie-dienst__name">{{ dienst.name }}</strong>
+                {% if dienst.beschreibung %}<span class="cw-cookie-dienst__text">{{ dienst.beschreibung }}</span>{% endif %}
+                {% if dienst.anbieter or dienst.cookies|length %}
+                <dl>
+                  {% if dienst.anbieter %}<div><dt>{{ t.anbieter }}</dt><dd>{{ dienst.anbieter }}</dd></div>{% endif %}
+                  {% if dienst.cookies|length %}<div><dt>{{ t.cookies }}</dt><dd>{{ dienst.cookies|join(', ') }}</dd></div>{% endif %}
+                </dl>
+                {% endif %}
+                {% if dienst.datenschutz %}<a class="cw-cookie-dienst__link" href="{{ dienst.datenschutz }}" target="_blank" rel="noopener noreferrer">{{ t.datenschutz_anbieter }}</a>{% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+          </details>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="cw-cookie-dialog__fuss">
+      <button type="button" class="cw-cookie__knopf" data-cw-cookie-aktion="speichern">{{ t.speichern }}</button>
+      <button type="button" class="cw-cookie__knopf" data-cw-cookie-aktion="alle">{{ t.alle }}</button>
+      <button type="button" class="cw-cookie__knopf" data-cw-cookie-aktion="notwendige">{{ t.notwendige }}</button>
+    </div>
+  </div>
+</div>
+
+{% if d.schwebend %}
+<button type="button" class="cw-cookie-schwebend cw-cookie-schwebend--{{ d.schwebend_seite }}" data-cw-cookie-oeffnen data-cw-cookie-schwebend aria-label="{{ t.schwebend }}" title="{{ t.schwebend }}" hidden>
+  <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5zm-3.5 7a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm2 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm5.5-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
+</button>
+{% endif %}

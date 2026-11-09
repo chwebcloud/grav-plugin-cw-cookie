@@ -1,0 +1,89 @@
+enabled: true
+
+# Erhoeht man die Zahl, gilt jede gespeicherte Zustimmung als veraltet und der
+# Banner erscheint bei allen Besucherinnen und Besuchern erneut.
+version: 1
+
+# Laufzeit des Zustimmungs-Cookies cw_consent in Tagen.
+laufzeit_tage: 180
+
+datenschutz_url: /datenschutz
+impressum_url: /impressum
+
+# Pfade, auf denen weder Banner noch Google-Einbindung erscheinen
+# (Anfang des Pfads genuegt).
+ausnahmen:
+  - /admin
+  - /api
+
+# Leere Texte = Standardtext in der Sprache der Seite (languages/*.yaml).
+texte:
+  titel: ''
+  text: ''
+  alle: ''
+  notwendige: ''
+  einstellungen: ''
+  dialog_titel: ''
+  dialog_text: ''
+  speichern: ''
+  link: ''
+
+# Kategorien. Leerer Titel oder leere Beschreibung = Standardtext.
+# google: Signale des Google Consent Mode, die mit der Kategorie erlaubt werden.
+kategorien:
+  - key: notwendig
+    titel: ''
+    beschreibung: ''
+    notwendig: true
+    aktiv: true
+    google:
+      - functionality_storage
+      - security_storage
+  - key: statistik
+    titel: ''
+    beschreibung: ''
+    notwendig: false
+    aktiv: true
+    google:
+      - analytics_storage
+  - key: marketing
+    titel: ''
+    beschreibung: ''
+    notwendig: false
+    aktiv: true
+    google:
+      - ad_storage
+      - ad_user_data
+      - ad_personalization
+  - key: medien
+    titel: ''
+    beschreibung: ''
+    notwendig: false
+    aktiv: true
+    google:
+      - personalization_storage
+
+google:
+  consent_mode: true
+  wait_for_update: 500
+  ads_data_redaction: true
+  url_passthrough: false
+  gtm_id: ''
+  gtm_laden: immer
+  gtm_kategorie: statistik
+  gtm_noscript: true
+  ga4_id: ''
+  ga4_laden: zustimmung
+  ga4_kategorie: statistik
+
+# Weitere Dienste (Matomo, Meta-Pixel, Hotjar, ...). Siehe README.
+dienste: []
+
+darstellung:
+  leitfarbe: '#434fbf'
+  position: leiste
+  farbschema: hell
+  radius: 10
+  schwebender_knopf: false
+  schwebender_knopf_seite: links
+  css_laden: true

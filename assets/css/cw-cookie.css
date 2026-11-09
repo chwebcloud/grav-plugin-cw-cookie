@@ -1,0 +1,678 @@
+/*
+ * CHWEB-Cookie -- Banner, Einstellungsdialog, Platzhalter.
+ *
+ * Leitfarbe, Schriftfarbe auf der Leitfarbe und Rundung setzt das Plugin als
+ * CSS-Variablen auf :root (Admin: Darstellung). Alle drei Knoepfe sind gleich
+ * gestaltet: "Nur notwendige" ist so sichtbar wie "Alle akzeptieren".
+ */
+:root {
+  --cw-cookie-farbe: #434fbf;
+  --cw-cookie-farbe-text: #fff;
+  --cw-cookie-radius: 10px;
+}
+
+.cw-cookie,
+.cw-cookie-dialog,
+.cw-cookie-platzhalter,
+.cw-cookie-schwebend {
+  --cw-hg: #fff;
+  --cw-text: #1d1f2b;
+  --cw-gedaempft: #4f5468;
+  --cw-linie: #dfe1ea;
+  --cw-flaeche: #f4f5f9;
+  --cw-schatten: 0 10px 40px rgba(20, 22, 40, .18), 0 2px 8px rgba(20, 22, 40, .08);
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--cw-text);
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .cw-cookie-schema-auto {
+    --cw-hg: #1b1d27;
+    --cw-text: #eef0f6;
+    --cw-gedaempft: #b7bbcb;
+    --cw-linie: #343849;
+    --cw-flaeche: #242734;
+    --cw-schatten: 0 10px 40px rgba(0, 0, 0, .5);
+  }
+}
+
+.cw-cookie *,
+.cw-cookie-dialog *,
+.cw-cookie-platzhalter * {
+  box-sizing: border-box;
+}
+
+.cw-cookie[hidden],
+.cw-cookie-dialog[hidden],
+.cw-cookie-schwebend[hidden] {
+  display: none !important;
+}
+
+/* ----------------------------------------------------------- Banner --- */
+
+.cw-cookie {
+  position: fixed;
+  z-index: 2147483000;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 1rem 1rem;
+  pointer-events: none;
+}
+
+.cw-cookie__rahmen {
+  pointer-events: auto;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem 2rem;
+  background: var(--cw-hg);
+  border: 1px solid var(--cw-linie);
+  border-top: 4px solid var(--cw-cookie-farbe);
+  border-radius: var(--cw-cookie-radius);
+  box-shadow: var(--cw-schatten);
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+}
+
+.cw-cookie--box-links,
+.cw-cookie--box-rechts {
+  right: auto;
+  max-width: 28rem;
+}
+
+.cw-cookie--box-rechts {
+  left: auto;
+  right: 0;
+}
+
+.cw-cookie--box-links .cw-cookie__rahmen,
+.cw-cookie--box-rechts .cw-cookie__rahmen {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.cw-cookie__inhalt {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cw-cookie__titel {
+  margin: 0 0 .35rem;
+  font-family: inherit;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--cw-text);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.cw-cookie__text {
+  font-size: .9375rem;
+  color: var(--cw-gedaempft);
+}
+
+.cw-cookie__text p {
+  margin: 0 0 .5rem;
+}
+
+.cw-cookie__text p:last-child {
+  margin-bottom: 0;
+}
+
+.cw-cookie a,
+.cw-cookie-dialog a,
+.cw-cookie-platzhalter a {
+  color: var(--cw-cookie-farbe);
+  text-decoration: underline;
+  text-underline-offset: .15em;
+}
+
+.cw-cookie-schema-auto a {
+  color: inherit;
+}
+
+.cw-cookie__rechtliches {
+  margin: .5rem 0 0;
+  font-size: .875rem;
+}
+
+.cw-cookie__knoepfe {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .625rem;
+}
+
+.cw-cookie--box-links .cw-cookie__knoepfe,
+.cw-cookie--box-rechts .cw-cookie__knoepfe {
+  flex-direction: column;
+}
+
+/* Alle Knoepfe gleich: kein Dark Pattern. */
+.cw-cookie__knopf {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: .625rem 1.25rem;
+  font: inherit;
+  font-size: .9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  color: var(--cw-cookie-farbe-text);
+  background: var(--cw-cookie-farbe);
+  border: 2px solid var(--cw-cookie-farbe);
+  border-radius: var(--cw-cookie-radius);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.cw-cookie__knopf:hover {
+  filter: brightness(1.1);
+}
+
+.cw-cookie__knopf--zweit {
+  color: var(--cw-cookie-farbe);
+  background: transparent;
+}
+
+.cw-cookie-schema-auto .cw-cookie__knopf--zweit {
+  color: var(--cw-text);
+}
+
+.cw-cookie__knopf:focus-visible,
+.cw-cookie-dialog__zu:focus-visible,
+.cw-cookie-schwebend:focus-visible,
+.cw-cookie-link:focus-visible,
+.cw-cookie-kat__dienste summary:focus-visible,
+.cw-cookie a:focus-visible,
+.cw-cookie-dialog a:focus-visible,
+.cw-cookie-platzhalter a:focus-visible {
+  outline: 3px solid var(--cw-cookie-farbe);
+  outline-offset: 3px;
+}
+
+.cw-cookie__knopf:focus-visible {
+  outline-color: var(--cw-text);
+}
+
+/* ---------------------------------------------------------- Dialog --- */
+
+html.cw-cookie-gesperrt,
+html.cw-cookie-gesperrt body {
+  overflow: hidden;
+}
+
+.cw-cookie-dialog {
+  position: fixed;
+  z-index: 2147483001;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 17, 30, .55);
+}
+
+.cw-cookie-dialog__fenster {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 42rem;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  background: var(--cw-hg);
+  border-radius: var(--cw-cookie-radius);
+  box-shadow: var(--cw-schatten);
+  overflow: hidden;
+  outline: none;
+}
+
+.cw-cookie-dialog__kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem .75rem 1.5rem;
+  border-bottom: 1px solid var(--cw-linie);
+  border-top: 4px solid var(--cw-cookie-farbe);
+}
+
+.cw-cookie-dialog__kopf .cw-cookie__titel {
+  margin: 0;
+}
+
+.cw-cookie-dialog__zu {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  color: var(--cw-text);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.cw-cookie-dialog__zu:hover {
+  background: var(--cw-flaeche);
+}
+
+.cw-cookie-dialog__rumpf {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cw-cookie-kategorien {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.cw-cookie-kat {
+  margin: 0 0 .75rem;
+  padding: 1rem 1.125rem;
+  background: var(--cw-flaeche);
+  border: 1px solid var(--cw-linie);
+  border-radius: var(--cw-cookie-radius);
+}
+
+.cw-cookie-kat::before {
+  content: none;
+}
+
+.cw-cookie-kat__kopf {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.cw-cookie-kat__titel {
+  flex: 1 1 auto;
+  margin: 0;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--cw-text);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.cw-cookie-kat__immer {
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--cw-gedaempft);
+}
+
+.cw-cookie-kat__text {
+  margin: .5rem 0 0;
+  font-size: .9375rem;
+  color: var(--cw-gedaempft);
+}
+
+/* Schalter: echtes Kontrollkaestchen (role=switch), darueber gelegt. */
+.cw-cookie-schalter {
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 3rem;
+  height: 1.75rem;
+}
+
+.cw-cookie-schalter input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.cw-cookie-schalter input:disabled {
+  cursor: not-allowed;
+}
+
+.cw-cookie-schalter__spur {
+  position: absolute;
+  inset: 0;
+  background: #9a9fb2;
+  border-radius: 999px;
+  transition: background-color .15s ease;
+}
+
+.cw-cookie-schalter__spur::after {
+  content: "";
+  position: absolute;
+  top: .1875rem;
+  left: .1875rem;
+  width: 1.375rem;
+  height: 1.375rem;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+  transition: transform .15s ease;
+}
+
+.cw-cookie-schalter input:checked + .cw-cookie-schalter__spur {
+  background: var(--cw-cookie-farbe);
+}
+
+.cw-cookie-schalter input:checked + .cw-cookie-schalter__spur::after {
+  transform: translateX(1.25rem);
+}
+
+.cw-cookie-schalter input:disabled + .cw-cookie-schalter__spur {
+  opacity: .55;
+}
+
+.cw-cookie-schalter input:focus-visible + .cw-cookie-schalter__spur {
+  outline: 3px solid var(--cw-cookie-farbe);
+  outline-offset: 3px;
+}
+
+.cw-cookie-kat__dienste {
+  margin-top: .625rem;
+  font-size: .9375rem;
+}
+
+.cw-cookie-kat__dienste summary {
+  display: list-item;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--cw-cookie-farbe);
+}
+
+.cw-cookie-schema-auto .cw-cookie-kat__dienste summary {
+  color: var(--cw-text);
+}
+
+.cw-cookie-kat__dienste ul {
+  list-style: none;
+  margin: .5rem 0 0;
+  padding: 0;
+}
+
+.cw-cookie-dienst {
+  margin: 0 0 .5rem;
+  padding: .75rem .875rem;
+  background: var(--cw-hg);
+  border: 1px solid var(--cw-linie);
+  border-radius: calc(var(--cw-cookie-radius) * .6);
+}
+
+.cw-cookie-dienst::before {
+  content: none;
+}
+
+.cw-cookie-dienst__name {
+  display: block;
+  color: var(--cw-text);
+}
+
+.cw-cookie-dienst__text {
+  display: block;
+  margin-top: .15rem;
+  color: var(--cw-gedaempft);
+}
+
+.cw-cookie-dienst dl {
+  margin: .4rem 0 0;
+  font-size: .875rem;
+}
+
+.cw-cookie-dienst dl div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 .4rem;
+}
+
+.cw-cookie-dienst dt {
+  font-weight: 600;
+  color: var(--cw-text);
+}
+
+.cw-cookie-dienst dt::after {
+  content: ":";
+}
+
+.cw-cookie-dienst dd {
+  margin: 0;
+  color: var(--cw-gedaempft);
+  word-break: break-word;
+}
+
+.cw-cookie-dienst__link {
+  display: inline-block;
+  margin-top: .35rem;
+  font-size: .875rem;
+}
+
+.cw-cookie-dialog__fuss {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .625rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--cw-linie);
+  background: var(--cw-hg);
+}
+
+.cw-cookie-dialog__fuss .cw-cookie__knopf {
+  flex: 1 1 10rem;
+}
+
+/* ------------------------------------------------ Schwebender Knopf --- */
+
+.cw-cookie-schwebend {
+  -webkit-appearance: none;
+  appearance: none;
+  position: fixed;
+  z-index: 2147482999;
+  bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  color: var(--cw-cookie-farbe-text);
+  background: var(--cw-cookie-farbe);
+  border: 2px solid var(--cw-hg);
+  border-radius: 50%;
+  box-shadow: var(--cw-schatten);
+  cursor: pointer;
+}
+
+.cw-cookie-schwebend--links {
+  left: 1rem;
+}
+
+.cw-cookie-schwebend--rechts {
+  right: 1rem;
+}
+
+/* Link-Knopf aus cw_cookie_link(): sieht aus wie ein Link der Umgebung. */
+.cw-cookie-link {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------ Platzhalter --- */
+
+.cw-cookie-einbettung {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0 0 1rem;
+}
+
+.cw-cookie-einbettung iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.cw-cookie-platzhalter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  width: 100%;
+  min-height: 12rem;
+  margin: 0 0 1rem;
+  padding: 1.25rem;
+  text-align: center;
+  background: var(--cw-flaeche);
+  border: 2px dashed var(--cw-linie);
+  border-radius: var(--cw-cookie-radius);
+}
+
+.cw-cookie-platzhalter--fuellend {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  margin: 0;
+  overflow-y: auto;
+}
+
+.cw-cookie-platzhalter__titel {
+  margin: 0;
+  font-weight: 700;
+  color: var(--cw-text);
+}
+
+.cw-cookie-platzhalter__text {
+  max-width: 36rem;
+  margin: 0;
+  font-size: .9375rem;
+  color: var(--cw-gedaempft);
+}
+
+.cw-cookie-platzhalter__knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: .25rem;
+}
+
+.cw-cookie-platzhalter__link {
+  margin: 0;
+  font-size: .875rem;
+}
+
+/* ----------------------------------------------------------- Mobil --- */
+
+@media (max-width: 47.99em) {
+  .cw-cookie__rahmen {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem 1.125rem;
+  }
+
+  .cw-cookie--box-links,
+  .cw-cookie--box-rechts {
+    max-width: none;
+    left: 0;
+    right: 0;
+  }
+
+  .cw-cookie {
+    padding: 0 .5rem .5rem;
+  }
+
+  .cw-cookie__knoepfe {
+    flex-direction: column;
+  }
+
+  .cw-cookie__knopf {
+    width: 100%;
+  }
+
+  .cw-cookie-dialog {
+    padding: .5rem;
+    align-items: flex-end;
+  }
+
+  .cw-cookie-dialog__fenster {
+    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .cw-cookie-dialog__rumpf {
+    padding: 1rem 1.125rem;
+  }
+
+  .cw-cookie-dialog__fuss {
+    flex-direction: column;
+    padding: .875rem 1.125rem;
+  }
+
+  .cw-cookie-dialog__fuss .cw-cookie__knopf {
+    flex: 0 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cw-cookie:not([hidden]) .cw-cookie__rahmen {
+    animation: cw-cookie-ein .25s ease-out;
+  }
+
+  @keyframes cw-cookie-ein {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@media print {
+  .cw-cookie,
+  .cw-cookie-dialog,
+  .cw-cookie-schwebend {
+    display: none !important;
+  }
+}

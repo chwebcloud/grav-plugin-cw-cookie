@@ -1,0 +1,29 @@
+{% extends 'partials/base.html.twig' %}
+
+{# Klassischer Admin: Uebersicht, was cw-cookie einbindet. Eingestellt wird
+   alles unter Plugins > CHWEB-Cookie. Daten aus Dashboard::build(). #}
+{% set d = cw_cookie_dashboard %}
+
+{% block titlebar %}
+    <div class="button-bar">
+        <a class="button" href="{{ admin_route('/plugins/cw-cookie') }}"><i class="fa fa-cog"></i> Einstellungen</a>
+    </div>
+    <h1><i class="fa fa-fw fa-shield"></i> {{ 'PLUGIN_CW_COOKIE.DASHBOARD'|t }}</h1>
+{% endblock %}
+
+{% block content %}
+    {% for h in d.hinweise %}
+        <div class="notice warning"><p>{{ h }}</p></div>
+    {% endfor %}
+    <table class="cw-table" style="width:100%;border-collapse:collapse">
+        <tbody>
+            <tr><th style="text-align:left;padding:.4rem .6rem">Banner</th><td>{{ d.aktiv ? 'aktiv' : 'ausgeschaltet' }}</td></tr>
+            <tr><th style="text-align:left;padding:.4rem .6rem">Version der Zustimmung</th><td>{{ d.version }}</td></tr>
+            <tr><th style="text-align:left;padding:.4rem .6rem">Zustimmung gilt</th><td>{{ d.laufzeit }} Tage</td></tr>
+            <tr><th style="text-align:left;padding:.4rem .6rem">Google Tag Manager</th><td>{{ d.gtm }}</td></tr>
+            <tr><th style="text-align:left;padding:.4rem .6rem">Google Analytics 4 (direkt)</th><td>{{ d.ga4 }}</td></tr>
+            <tr><th style="text-align:left;padding:.4rem .6rem">Kategorien</th><td>{% for k in d.kategorien %}{{ k.titel }} ({{ k.dienste|length }}){{ not loop.last ? ', ' }}{% endfor %}</td></tr>
+            <tr><th style="text-align:left;padding:.4rem .6rem">Dienste insgesamt</th><td>{{ d.dienste }}</td></tr>
+        </tbody>
+    </table>
+{% endblock %}

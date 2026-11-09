@@ -1,0 +1,17 @@
+{
+    "name": "chweb/cw-cookie",
+    "type": "grav-plugin",
+    "description": "Cookie consent banner for Grav: Google Consent Mode v2, Google Tag Manager, Google Analytics 4 and any further service blocked until consent. No CDN, no server-side logging.",
+    "keywords": ["grav", "plugin", "cookie", "consent", "gdpr", "consent-mode", "google-tag-manager", "chweb"],
+    "homepage": "https://chweb.ch",
+    "license": "MIT",
+    "authors": [
+        { "name": "Thomas von CHWEB", "email": "info@chweb.ch", "homepage": "https://chweb.ch" }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": { "Grav\\Plugin\\CwCookie\\": "classes/" }
+    }
+}
