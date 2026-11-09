@@ -69,7 +69,12 @@ google:
   ads_data_redaction: true
   url_passthrough: false
   gtm_id: ''
-  gtm_laden: immer
+  # ZUSTIMMUNG als Vorgabe, nicht IMMER. «immer» ist der fortgeschrittene
+  # Consent Mode: Google wird schon beim ersten Seitenaufruf kontaktiert,
+  # vor jeder Wahl, und das noscript-iframe laesst sich gar nicht
+  # zurueckhalten. Das ist ein zulaessiger Aufbau -- aber einer, den die
+  # Betreiberin bewusst waehlen muss, nicht einer, der mitgeliefert wird.
+  gtm_laden: zustimmung
   gtm_kategorie: statistik
   gtm_noscript: true
   ga4_id: ''
@@ -84,6 +89,9 @@ darstellung:
   position: leiste
   farbschema: hell
   radius: 10
-  schwebender_knopf: false
+  # AN als Vorgabe: Die Zustimmung zurueckzunehmen muss so leicht sein wie
+  # sie zu geben. Ohne diesen Knopf gaebe es dafuer gar keinen Weg, solange
+  # das Theme keinen eigenen Verweis setzt. Wer einen hat, schaltet ihn aus.
+  schwebender_knopf: true
   schwebender_knopf_seite: links
   css_laden: true

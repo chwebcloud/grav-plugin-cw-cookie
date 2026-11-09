@@ -21,16 +21,16 @@ final class Dashboard
 
         $hinweise = [];
         if ($g['gtm_ungueltig']) {
-            $hinweise[] = 'Die GTM-Container-ID hat nicht die Form GTM-XXXXXXX und wird nicht eingebunden.';
+            $hinweise[] = self::text('HINWEIS_GTM_UNGUELTIG');
         }
         if ($g['ga4_ungueltig']) {
-            $hinweise[] = 'Die GA4-Mess-ID hat nicht die Form G-XXXXXXXXXX und wird nicht eingebunden.';
+            $hinweise[] = self::text('HINWEIS_GA4_UNGUELTIG');
         }
         if ($g['ga4_doppelt']) {
-            $hinweise[] = 'GTM und GA4 sind beide eingetragen. GA4 wird deshalb NICHT direkt eingebunden (sonst doppelte Messung) – richten Sie GA4 im Tag Manager ein.';
+            $hinweise[] = self::text('HINWEIS_GA4_DOPPELT');
         }
         if (!$g['consent_mode'] && $g['gtm_id'] !== '') {
-            $hinweise[] = 'Consent Mode ist aus: der Tag Manager lädt erst nach der Zustimmung.';
+            $hinweise[] = self::text('HINWEIS_CONSENT_MODE_AUS');
         }
 
         $dienste = 0;
@@ -42,11 +42,28 @@ final class Dashboard
             'aktiv'      => (bool) Grav::instance()['config']->get('plugins.cw-cookie.enabled'),
             'version'    => $k['version'],
             'laufzeit'   => $k['laufzeit'],
-            'gtm'        => $g['gtm_id'] !== '' ? $g['gtm_id'] . ' (' . ($g['gtm_laden'] === 'immer' ? 'Consent Mode' : 'nach Zustimmung') . ')' : '–',
-            'ga4'        => $g['ga4_aktiv'] ? $g['ga4_id'] . ' (' . ($g['ga4_laden'] === 'immer' ? 'Consent Mode' : 'nach Zustimmung') . ')' : '–',
+            'gtm'        => $g['gtm_id'] !== '' ? $g['gtm_id'] . ' (' . ($g['gtm_laden'] === 'immer' ? 'Consent Mode' : self::text('NACH_ZUSTIMMUNG')) . ')' : '–',
+            'ga4'        => $g['ga4_aktiv'] ? $g['ga4_id'] . ' (' . ($g['ga4_laden'] === 'immer' ? 'Consent Mode' : self::text('NACH_ZUSTIMMUNG')) . ')' : '–',
             'kategorien' => $k['kategorien'],
             'dienste'    => $dienste,
             'hinweise'   => $hinweise,
         ];
+    }
+
+    /**
+     * Text in der Sprache der Website. Ohne languages.supported ist keine
+     * Sprache aktiv und Grav faellt auf Englisch zurueck -- dann gilt die
+     * Standardsprache der Website, zuletzt Deutsch.
+     */
+    private static function text(string $schluessel): string
+    {
+        $grav = Grav::instance();
+        $sprache = $grav['language'];
+        $code = $sprache->getActive()
+            ?: $grav['config']->get('system.languages.default_lang')
+            ?: $grav['config']->get('site.default_lang')
+            ?: 'de';
+
+        return (string) $sprache->translate('PLUGIN_CW_COOKIE.' . $schluessel, array_unique([$code, 'de']));
     }
 }

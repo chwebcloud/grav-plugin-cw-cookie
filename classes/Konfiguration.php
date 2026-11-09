@@ -226,7 +226,7 @@ final class Konfiguration
 
         // Ohne Consent Mode gibt es kein "vorsorglich verweigert" -- dann
         // darf ein Google-Tag erst nach der Zustimmung laden.
-        $gtmLaden = ($g['gtm_laden'] ?? 'immer') === 'zustimmung' || !$consentMode ? 'zustimmung' : 'immer';
+        $gtmLaden = ($g['gtm_laden'] ?? 'zustimmung') === 'zustimmung' || !$consentMode ? 'zustimmung' : 'immer';
         $ga4Laden = ($g['ga4_laden'] ?? 'zustimmung') === 'immer' && $consentMode ? 'immer' : 'zustimmung';
 
         return [
@@ -330,7 +330,7 @@ final class Konfiguration
             'position'        => $position,
             'farbschema'      => ($d['farbschema'] ?? 'hell') === 'auto' ? 'auto' : 'hell',
             'radius'          => max(0, min(32, (int) ($d['radius'] ?? 10))),
-            'schwebend'       => (bool) ($d['schwebender_knopf'] ?? false),
+            'schwebend'       => (bool) ($d['schwebender_knopf'] ?? true),
             'schwebend_seite' => ($d['schwebender_knopf_seite'] ?? 'links') === 'rechts' ? 'rechts' : 'links',
             'css_laden'       => (bool) ($d['css_laden'] ?? true),
         ];
